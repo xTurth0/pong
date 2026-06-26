@@ -1,4 +1,5 @@
 const racketMovementSpeed = 10;
+const computerRacketMovementSpeed = 1;
 let ballMovementSpeed = 1;
 const ballIncrementSpeed = 0;
 const ballInterval = 20;
@@ -14,8 +15,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function init() {
     document.onkeydown = handleKeydown;
-    const intervalId = setInterval(moveBall, ballInterval);
+    const ball = document.getElementById("ball");
+    const intervalId = setInterval(moveBall, ballInterval, ball);
+    const intervalComputerRacketId = setInterval(computerRacketMovement, computerRacketMovementSpeed, ball);
     
+}
+
+function computerRacketMovement(ball) {
+    let computerRacket = document.getElementById("computer");
+    let computerMarginLeft = parseInt(window.getComputedStyle(computerRacket).marginLeft, 10);
+    let ballMarginLeft = parseInt(window.getComputedStyle(ball).marginLeft, 10);
+    if (computerMarginLeft + 40 < ballMarginLeft && computerMarginLeft + computerRacketMovementSpeed <= 400) {
+        computerRacket.style.marginLeft = (computerMarginLeft + computerRacketMovementSpeed) + "px";
+    }
+    else if (computerMarginLeft + 40 > ballMarginLeft && computerMarginLeft + computerRacketMovementSpeed >= 0) {
+        computerRacket.style.marginLeft = (computerMarginLeft - computerRacketMovementSpeed) + "px";
+    }
 }
 
 function handleKeydown(event) {
@@ -30,10 +45,9 @@ function handleKeydown(event) {
     }    
 }
 
-function moveBall() {
-    const ball = document.getElementById("ball");
-    currentMarginLeft = parseInt(window.getComputedStyle(ball).marginLeft, 10);
-    currentMarginTop = parseInt(window.getComputedStyle(ball).marginTop, 10);
+function moveBall(ball) {
+    let currentMarginLeft = parseInt(window.getComputedStyle(ball).marginLeft, 10);
+    let currentMarginTop = parseInt(window.getComputedStyle(ball).marginTop, 10);
     if (currentMarginTop == 440 || currentMarginTop == -440) {
         ballMovementSpeed += ballIncrementSpeed;
     } 
@@ -48,7 +62,6 @@ function moveBall() {
         ball.style.marginTop = (currentMarginTop + ballMovementSpeed) + "px";
     }
     else if (direction === "NE") {
-        console.log(currentMarginTop);
         if (currentMarginTop <= -440) {
             direction = "SE";
         }
